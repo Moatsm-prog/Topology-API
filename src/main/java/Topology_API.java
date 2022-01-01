@@ -8,7 +8,12 @@ import java.util.ArrayList;
 
 public class Topology_API {
 
-
+    /**
+     *
+     * @param File path as a String
+     * @return Topology object in which we store object data
+     * @throws IOException
+     */
     static public Topology ReadJSON(String s) throws IOException, ParseException {
 
         JSONParser jsonparser = new JSONParser();
@@ -67,6 +72,11 @@ public class Topology_API {
             return mytopology;
         }
 
+    /**
+     *
+     * @param JSONObject and writes this object to JSON file.
+     * @throws IOException
+     */
         static public void writeJSON(JSONObject o) throws IOException {
             FileWriter file = new FileWriter("C:\\Users\\moats\\IdeaProjects\\Topology_API\\src\\JSONFiles\\out.json");
             file.write(o.toJSONString());
@@ -74,12 +84,20 @@ public class Topology_API {
 
         }
 
-        static public ArrayList<Topology> queryTopologies(){
+    /**
+     *
+     * @return An Array of the topologies stored in the memory
+     */
+    static public ArrayList<Topology> queryTopologies(){
             return Topology.topologies;
         }
 
-
-        static public Topology deleteTopology(String id){
+    /**
+     *
+     * @param Topology id
+     * @return If it finds a Topology with the given id it returns it else it returns null pointer
+     */
+    static public Topology deleteTopology(String id){
             for(int i=0 ; i < Topology.topologies.size() ; i++){
                 if(Topology.topologies.get(i).getId().equals(id)){
                     return Topology.topologies.remove(i);
@@ -88,7 +106,12 @@ public class Topology_API {
             return null;
         }
 
-        static public ArrayList<Component> queryDevices(String id){
+    /**
+     *
+     * @param Topology id
+     * @return it returns an array of components in the Topology of the given id else it returns null pointer
+     */
+    static public ArrayList<Component> queryDevices(String id){
             for(int i=0 ; i < Topology.topologies.size() ; i++){
                 if(Topology.topologies.get(i).getId().equals(id)){
                     return Topology.topologies.get(i).getMycomp();
@@ -97,6 +120,13 @@ public class Topology_API {
             return null;
         }
 
+    /**
+     *
+     * @param //Topology id
+     * @param //Netlist id
+     * @return it returns an array of components in the Topology of the given id and the netlist given id
+     *          else it returns null pointer
+     */
         static public ArrayList<Component> queryDevicesWithNetlistNode(String Tid , String Nid){
             ArrayList<Component> arr = null;
             for(int i=0 ; i < Topology.topologies.size() ; i++){
