@@ -1,14 +1,21 @@
+import Components.*;
+import org.json.simple.JSONObject;
+
 import java.util.ArrayList;
 
 public class Topology{
     private String id;
+    private JSONObject object;
     private  ArrayList<Component> mycomp;
     static ArrayList<Topology> topologies;
+
+    public JSONObject getObject() {
+        return object;
+    }
 
     public String getId() {
         return id;
     }
-
     public ArrayList<Component> getMycomp() {
         return mycomp;
     }
@@ -27,8 +34,10 @@ public class Topology{
 
 
 
-    public Topology(String id) {
+    public Topology(String id , JSONObject o) {
         this.id = id;
+        this.topologies = new ArrayList<Topology>();
+        this.object = o;
     }
 
 

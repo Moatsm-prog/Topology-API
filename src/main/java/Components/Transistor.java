@@ -1,3 +1,5 @@
+package Components;
+
 import java.util.ArrayList;
 
 public class Transistor extends Component{

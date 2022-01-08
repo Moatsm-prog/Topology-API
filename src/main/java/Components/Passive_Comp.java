@@ -1,3 +1,5 @@
+package Components;
+
 import java.util.ArrayList;
 
 public class Passive_Comp extends Component{

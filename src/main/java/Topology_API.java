@@ -1,26 +1,32 @@
+import Components.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.io.*;
 import java.util.ArrayList;
 
+
+/**
+ * @author Moatsm Eldeeb
+ * @version 1.0
+ */
 public class Topology_API {
 
     /**
      *
-     * @param File path as a String
-     * @return Topology object in which we store object data
-     * @throws IOException
+     * @param s The path of the JSON file we want to read
+     * @return JSONObject which contains the entered Topology
+     * @throws IOException if input or output exception occurred
+     * @throws ParseException if an error occurred during parsing
      */
-    static public Topology ReadJSON(String s) throws IOException, ParseException {
+    static public JSONObject ReadJSON(String s) throws IOException, ParseException {
 
         JSONParser jsonparser = new JSONParser();
         FileReader reader = new FileReader(s);
         Object obj =jsonparser.parse(reader);
         JSONObject myobject = (JSONObject) obj;
-        Topology mytopology = new Topology(myobject.get("id").toString());
+        Topology mytopology = new Topology(myobject.get("id").toString() , myobject);
         JSONArray mycomp = (JSONArray) myobject.get("components");
             for(int i = 0; i < mycomp.size(); i++){
                 JSONObject comp = (JSONObject) mycomp.get(i);
@@ -69,24 +75,75 @@ public class Topology_API {
 
             }
             Topology.topologies.add(mytopology);
-            return mytopology;
+            return myobject;
         }
 
     /**
-     *
-     * @param JSONObject and writes this object to JSON file.
-     * @throws IOException
+     * @param str The unformated JSON string
+     * @return String containing the formatted JSON to be printed
      */
-        static public void writeJSON(JSONObject o) throws IOException {
-            FileWriter file = new FileWriter("C:\\Users\\moats\\IdeaProjects\\Topology_API\\src\\JSONFiles\\out.json");
-            file.write(o.toJSONString());
+    static private String Format(String str){
+            String to_be_printed ="";
+            int indent = 0;
+            String space = " ";
+            for (int i=0 ; i < str.length();i++){
+                Character c = str.charAt(i);
+                if(c == Character.valueOf('{')){
+                    indent = indent + 2;
+                    String repeated = space.repeat(indent);
+                    to_be_printed = to_be_printed + c + '\n' + repeated;
+
+                }
+                else if(c == Character.valueOf(':')){
+                    to_be_printed = to_be_printed + c + ' ';
+                }
+                else if(c == Character.valueOf('[')){
+                    indent = indent + 2;
+                    String repeated = space.repeat(indent);
+                    to_be_printed = to_be_printed + c + '\n' + repeated;
+
+
+                }
+                else if(c == Character.valueOf(',')){
+                    String repeated = space.repeat(indent);
+                    to_be_printed = to_be_printed + c + '\n' + repeated;
+                }
+                else if(c == Character.valueOf('}')){
+                    indent = indent - 2;
+                    String repeated = space.repeat(indent);
+                    to_be_printed = to_be_printed + '\n' + repeated + c  ;
+                }
+                else if(c == Character.valueOf(']')){
+                    indent = indent - 2;
+                    String repeated = space.repeat(indent);
+                    to_be_printed = to_be_printed + '\n' + repeated + c  ;
+                }
+
+
+                else{
+                    to_be_printed = to_be_printed + c;
+                }
+            }
+            return to_be_printed;
+        }
+    /**
+     *
+     * @param mytopology The topology we want to write to the file
+     * @param dest The path of the file we want to write the topology in;
+     * @throws IOException if input or output exception occurred
+     */
+        static public void writeJSON(Topology mytopology , String dest) throws IOException {
+            FileWriter file = new FileWriter(dest);
+            String str = mytopology.getObject().toJSONString();
+            String to_be_printed = Format(str);
+            file.write(to_be_printed);
             file.close();
 
         }
 
     /**
      *
-     * @return An Array of the topologies stored in the memory
+     * @return Arraylist of the list of topologies stored in the memory
      */
     static public ArrayList<Topology> queryTopologies(){
             return Topology.topologies;
@@ -94,8 +151,8 @@ public class Topology_API {
 
     /**
      *
-     * @param Topology id
-     * @return If it finds a Topology with the given id it returns it else it returns null pointer
+     * @param id The id of the Topology we want to delete
+     * @return The topology removed from the List of topologies (if there is no such element it returns null)
      */
     static public Topology deleteTopology(String id){
             for(int i=0 ; i < Topology.topologies.size() ; i++){
@@ -108,8 +165,8 @@ public class Topology_API {
 
     /**
      *
-     * @param Topology id
-     * @return it returns an array of components in the Topology of the given id else it returns null pointer
+     * @param id The id of the Topology we search for
+     * @return The list of devices we search for in the List of topologies by the topology id (if there is no such element it returns null)
      */
     static public ArrayList<Component> queryDevices(String id){
             for(int i=0 ; i < Topology.topologies.size() ; i++){
@@ -122,10 +179,10 @@ public class Topology_API {
 
     /**
      *
-     * @param //Topology id
-     * @param //Netlist id
-     * @return it returns an array of components in the Topology of the given id and the netlist given id
-     *          else it returns null pointer
+     * @param Tid The id of the Topology we search for
+     * @param Nid The id of the Netlist we search for
+     * @return The list of devices we search for in the List of topologies by the topology id and Netlist is
+     *         (if there is no such elements it returns null)
      */
         static public ArrayList<Component> queryDevicesWithNetlistNode(String Tid , String Nid){
             ArrayList<Component> arr = null;

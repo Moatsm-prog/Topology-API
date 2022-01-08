@@ -1,3 +1,5 @@
+package Components;
+
 abstract public class Component {
 
     private String id;
